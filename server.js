@@ -3,10 +3,11 @@ const morgan = require('morgan')
 
 const app = express()
 
+//logger
 app.use(morgan('tiny'))
 
 app.get('/test', function(request, response) {
   response.send({ someFancyString: 'Hello World!' })
 })
 
-app.listen(process.env.PORT || 3000)
+module.exports = app
