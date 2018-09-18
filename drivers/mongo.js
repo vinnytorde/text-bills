@@ -1,0 +1,28 @@
+const MongoClient = require('mongodb').MongoClient
+
+const { DB_URL, DB_NAME, DB_USER, DB_PASSWORD, DB_COL_BILLS } = process.env
+
+const url = (() => {
+  let url = DB_URL.replace(/dbuser/i, DB_USER)
+  url = url.replace(/dbpassword/, DB_PASSWORD)
+  return url
+})()
+
+function driver(col = DB_COL_BILLS, callback) {
+  return new Promise(resolve => {
+    MongoClient.connect(
+      url,
+      { useNewUrlParser: true },
+      function(err, client) {
+        const collection = client.db(DB_NAME).collection(col)
+        // BSON != JSON
+        resolve(collection)
+        collection.find({}).toArray(function(err, items) {
+          client.close()
+        })
+      }
+    )
+  })
+}
+
+module.exports = driver
