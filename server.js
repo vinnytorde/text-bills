@@ -1,11 +1,13 @@
 const express = require('express')
 const morgan = require('morgan')
+const twilio = require('./drivers/twilio')
 const mongo = require('./drivers/mongo')
 const bodyParser = require('body-parser')
+
 const app = express()
 
 //logger middleware
-app.use(morgan('tiny'))
+app.use(morgan('dev'))
 //parser middleware
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -19,12 +21,16 @@ app.get('/test', function(request, response) {
 })
 
 app.post('/bill', function(request, response) {
-  console.log(request.body)
-  response.send({ test: 'you done been posted' })
+  const { name } = request.body
+  const vinny = 2102195643
+  const to = vinny
+  const body = `${name} has paid a bill!`
+  twilio(to, body).then(message => {
+    response.send({ vinny, body, name })
+  })
 })
 
 app.get('/report/:user', function(request, response) {
-  console.log(request.params.user)
   const { user } = request.params
   response.send('you are reporting for ' + user)
 })

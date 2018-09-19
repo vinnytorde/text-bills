@@ -4,4 +4,6 @@ environment.config()
 
 // express server
 const server = require('./server.js')
-server.listen(process.env.PORT || 3000)
+const port = process.env.PORT || 3000
+const success = (a, b, c, d) => console.log(`Serving from port ${port}`)
+server.listen(port, success)
