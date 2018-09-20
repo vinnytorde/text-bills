@@ -12,6 +12,8 @@ app.use(morgan('dev'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
+app.get('/', (req, res) => res.send({ home: 'success!' }))
+
 app.get('/test', function(request, response) {
   mongo().then(col => {
     col.find({}).toArray((error, data) => {
