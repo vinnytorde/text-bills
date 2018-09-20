@@ -14,7 +14,7 @@ function driver(col = DB_COL_BILLS) {
       url,
       { useNewUrlParser: true },
       function(err, client) {
-        if (err) throw error
+        if (err) throw err
         const collection = client.db(DB_NAME).collection(col)
         // BSON != JSON
         resolve(collection)
