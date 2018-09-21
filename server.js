@@ -26,7 +26,8 @@ app.get('/test', function(request, response) {
 
 app.post('/sms', function(request, response) {
   console.log('request content is: ', request.body)
-  twilio(request.body, 12102195643).then(message => {
+  twilio(JSON.stringify(request.body), 12102195643).then(message => {
+    console.log(message.sid)
     response.status(200).send()
   })
 })
