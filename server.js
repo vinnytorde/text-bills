@@ -8,11 +8,18 @@ const app = express()
 
 //logger middleware
 app.use(morgan('dev'))
+
 //parser middleware
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: true }))
 
 app.get('/', (req, res) => res.send({ home: 'success!' }))
+app.post('/', (request, response) => {
+  const { foo } = request.body
+  console.log('Heres foo, fool:', foo)
+  console.log('Heres the rest', request.body)
+  response.send(foo)
+})
 
 app.get('/test', function(request, response) {
   mongo().then(col => {
@@ -26,7 +33,7 @@ app.post('/bill', function(request, response) {
   const { name } = request.body
   const body = `${name} has paid a bill!`
   twilio(body, 2102195643).then(message => {
-    message.sid
+    response.send({ id: message.sid, body: message.body })
   })
 })
 
@@ -37,8 +44,6 @@ app.get('/report/:user', function(request, response) {
 
 app.post('/register', function(request, response) {
   const input = request.body
-  console.log(input)
-  console.log(request)
   response
     .status(200)
     .json({ input })
