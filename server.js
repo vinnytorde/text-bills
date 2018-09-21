@@ -3,6 +3,7 @@ const morgan = require('morgan')
 const twilio = require('./drivers/twilio')
 const mongo = require('./drivers/mongo')
 const bodyParser = require('body-parser')
+const { NUMBER } = process.env
 
 const app = express()
 
@@ -14,12 +15,6 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.get('/', (req, res) => res.send({ home: 'success!' }))
-app.post('/', (request, response) => {
-  const { foo } = request.body
-  console.log('Heres foo, fool:', foo)
-  console.log('Heres the rest', request.body)
-  response.send(foo)
-})
 
 app.get('/test', function(request, response) {
   mongo().then(col => {
@@ -29,17 +24,11 @@ app.get('/test', function(request, response) {
   })
 })
 
-app.post('/bill', function(request, response) {
-  const { name } = request.body
-  const body = `${name} has paid a bill!`
-  twilio(body, 2102195643).then(message => {
-    response.send({ id: message.sid, body: message.body })
+app.post('/sms', function(request, response) {
+  console.log('request content is: ', request.body)
+  twilio(request.body, 12102195643).then(message => {
+    response.status(200).send()
   })
-})
-
-app.get('/report/:user', function(request, response) {
-  const { user } = request.params
-  response.send('you are reporting for ' + user)
 })
 
 app.post('/register', function(request, response) {
