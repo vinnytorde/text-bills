@@ -8,7 +8,7 @@ const url = (() => {
   return url
 })()
 
-function driver(col = DB_COL_BILLS) {
+function read(col = DB_COL_BILLS) {
   return new Promise(resolve => {
     MongoClient.connect(
       url,
@@ -31,5 +31,4 @@ async function write(data, collection) {
   return result
 }
 
-driver.write = write
-module.exports = driver
+module.exports = { read, write }

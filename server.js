@@ -2,8 +2,8 @@ const express = require('express')
 const morgan = require('morgan')
 const twilio = require('./drivers/twilio')
 const mongo = require('./drivers/mongo')
+const utilities = require('./util')
 const bodyParser = require('body-parser')
-const { NUMBER } = process.env
 
 const app = express()
 
@@ -14,30 +14,20 @@ app.use(morgan('dev'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
-app.get('/', (req, res) => res.send({ home: 'success!' }))
+//test API
+app.get('/', (req, res) => res.send({ home: 'Bills API is live!' }))
 
-app.get('/test', function(request, response) {
-  mongo().then(col => {
-    col.find({}).toArray((error, data) => {
-      response.send({ length: data.length })
-    })
-  })
-})
-
+//logging a bill. Only gets called by Twilio
 app.post('/sms', function(request, response) {
-  console.log('request content is: ', request.body)
-  twilio(JSON.stringify(request.body), 12102195643).then(message => {
-    console.log(message.sid)
-    response.status(200).send()
-  })
-})
+  const { To: to, From: from, Body: body } = request.body
+  const commands = utilities.processMessage(body)
+  commands.forEach(utilities.processCommand)
+  response.status(200).send()
 
-app.post('/register', function(request, response) {
-  const input = request.body
-  response
-    .status(200)
-    .json({ input })
-    .send()
+  // twilio(JSON.stringify(request.body), 12102195643).then(message => {
+  //   console.log(message.sid)
+  //   response.status(200).send()
+  // })
 })
 
 module.exports = app
