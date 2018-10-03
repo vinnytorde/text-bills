@@ -9,6 +9,7 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "precommit": "lint-staged",
+    "prepush": "jest",
     "test": "jest --coverage",
     "test:watch": "jest --watchAll"
   },
