@@ -1,6 +1,17 @@
 const utilities = require('./../util')
 
 describe('utilities', function() {
+  describe('nextFriday', function() {
+    it('handles no date being passed', () => {
+      const input = undefined
+      expect(utilities.nextFriday(input)).toBeInstanceOf(Date)
+    })
+    it('handles a date being passed', () => {
+      const input = '01/24/1994'
+      expect(utilities.nextFriday(input)).toBeInstanceOf(Date)
+    })
+  })
+
   describe('processMessage', function() {
     it('splits a message based on line breaks', () => {
       const input = 'log: lunch $10 food\npay: lunch $10.00 food'
