@@ -1,3 +1,5 @@
+const constants = require('./constants')
+
 // returns the date object of when next friday will be, at 4pm
 function nextFriday(date = new Date()) {
   if (!(date instanceof Date)) date = new Date(date)
@@ -39,6 +41,11 @@ function processCommand(command) {
   asArray.shift()
   const linkedMap = {}
   linkedMap.type = asArray.shift()
+  if (constants.PAY_REGEX.test(linkedMap.type)) {
+    linkedMap.paid = true
+  } else {
+    linkedMap.paid = false
+  }
   linkedMap.name = asArray.shift()
   linkedMap.price = Number(asArray.shift())
 

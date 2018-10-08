@@ -87,10 +87,29 @@ describe('utilities', function() {
       expect(utilities.isValid(input)).toEqual(output)
     })
   })
+
   describe('processCommand', function() {
     it('returns a linked object of a command', () => {
       const input = 'log: lunch $10.00 test'
-      const output = { type: 'log', name: 'lunch', price: 10, category: 'test' }
+      const output = {
+        type: 'log',
+        name: 'lunch',
+        price: 10,
+        category: 'test',
+        paid: false
+      }
+      expect(utilities.processCommand(input)).toEqual(output)
+    })
+
+    it('appends paid: false in log type bill', () => {
+      const input = 'log: lunch $10'
+      const output = { type: 'log', name: 'lunch', price: 10, paid: false }
+      expect(utilities.processCommand(input)).toEqual(output)
+    })
+
+    it('appends paid: true in pay type bill', () => {
+      const input = 'pay: lunch $10'
+      const output = { type: 'pay', name: 'lunch', price: 10, paid: true }
       expect(utilities.processCommand(input)).toEqual(output)
     })
 
@@ -100,7 +119,8 @@ describe('utilities', function() {
         type: 'log',
         name: 'lunch with my friends',
         price: 10,
-        category: 'test'
+        category: 'test',
+        paid: false
       }
       expect(utilities.processCommand(input)).toEqual(output)
     })
@@ -111,20 +131,27 @@ describe('utilities', function() {
         type: 'log',
         name: 'lunch with my friends',
         price: 10.01,
-        category: 'test'
+        category: 'test',
+        paid: false
       }
       expect(utilities.processCommand(input)).toEqual(output)
     })
 
     it('handles non-floating point price', () => {
       const input = 'log: lunch $10 test'
-      const output = { type: 'log', name: 'lunch', price: 10, category: 'test' }
+      const output = {
+        type: 'log',
+        name: 'lunch',
+        price: 10,
+        category: 'test',
+        paid: false
+      }
       expect(utilities.processCommand(input)).toEqual(output)
     })
 
     it('handles missing optional category', () => {
       const input = 'log: lunch $10'
-      const output = { type: 'log', name: 'lunch', price: 10 }
+      const output = { type: 'log', name: 'lunch', price: 10, paid: false }
       expect(utilities.processCommand(input)).toEqual(output)
     })
 
@@ -134,7 +161,8 @@ describe('utilities', function() {
         type: 'log',
         name: 'lunch',
         price: 10,
-        category: 'category'
+        category: 'category',
+        paid: false
       }
       expect(utilities.processCommand(input)).toEqual(output)
     })

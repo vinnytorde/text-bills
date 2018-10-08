@@ -17,12 +17,16 @@ app.use(bodyParser.urlencoded({ extended: true }))
 //test API
 app.get('/', (req, res) => res.send({ home: 'Bills API is live!' }))
 
-//logging a bill. Only gets called by Twilio
+//logging/paying a bill. Only gets called by Twilio
 app.post('/sms', function(request, response) {
   const { To: to, From: from, Body: body } = request.body
   const commands = utilities.processMessage(body)
-  commands.forEach(utilities.processCommand)
-  response.status(200).send()
+  const instructions = commands.map(utilities.processCommand)
+
+  mongo
+    .write(instructions)
+    .then(result => (result.insertedCount === instructions.length ? 200 : 500))
+    .then(status => response.status(status).send())
 
   // twilio(JSON.stringify(request.body), number).then(message => {
   //   console.log(message.sid)

@@ -9,15 +9,16 @@ const url = (() => {
 })()
 
 function read(col = DB_COL_BILLS) {
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     MongoClient.connect(
       url,
       { useNewUrlParser: true },
       function(err, client) {
         const collection = client.db(DB_NAME).collection(col)
         // BSON != JSON
-        resolve(collection)
         collection.find({}).toArray(function(err, items) {
+          if (err) reject(err)
+          resolve(items)
           client.close()
         })
       }
@@ -25,9 +26,18 @@ function read(col = DB_COL_BILLS) {
   })
 }
 
-async function write(data, collection) {
-  const column = await mongo(collection || DB_COL_BILLS)
-  const result = await column.insert(data, { fullResult: true })
+async function write(data, col = DB_COL_BILLS) {
+  const column = await new Promise(resolve => {
+    MongoClient.connect(
+      url,
+      { useNewUrlParser: true },
+      function(err, client) {
+        const collection = client.db(DB_NAME).collection(col)
+        resolve(collection)
+      }
+    )
+  })
+  const result = await column.insertMany(data, { fullResult: true })
   return result
 }
 
