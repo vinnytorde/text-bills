@@ -4,11 +4,13 @@ describe('utilities', function() {
   describe('nextFriday', function() {
     it('handles no date being passed', () => {
       const input = undefined
-      expect(utilities.nextFriday(input)).toBeInstanceOf(Date)
+      const output = Date
+      expect(utilities.nextFriday(input)).toBeInstanceOf(output)
     })
     it('handles a date being passed', () => {
       const input = '01/24/1994'
-      expect(utilities.nextFriday(input)).toBeInstanceOf(Date)
+      const output = Date
+      expect(utilities.nextFriday(input)).toBeInstanceOf(output)
     })
   })
 
@@ -165,6 +167,34 @@ describe('utilities', function() {
         paid: false
       }
       expect(utilities.processCommand(input)).toEqual(output)
+    })
+  })
+
+  describe('isRegisterText', function() {
+    it('handles a correct message structure: register: password', () => {
+      const input = 'register: password'
+      const output = true
+      expect(utilities.isRegisterText(input)).toEqual(output)
+    })
+
+    it('handles handles incorrect structure: register: password', () => {
+      const input = 'uhhh... password'
+      const output = false
+      expect(utilities.isRegisterText(input)).toEqual(output)
+    })
+  })
+
+  describe('processRegisterText', function() {
+    it('returns a password when fed the correct input', () => {
+      const input = 'register: password'
+      const output = true
+      expect(utilities.isRegisterText(input)).toEqual(output)
+    })
+
+    it('handles all non-whitespace characters in password', () => {
+      const input = 'register: []()!@#$%^&*()1234567890abc'
+      const output = '[]()!@#$%^&*()1234567890abc'
+      expect(utilities.processRegisterText(input)).toEqual(output)
     })
   })
 })

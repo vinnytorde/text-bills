@@ -3,7 +3,7 @@ const MongoClient = require('mongodb').MongoClient
 const { DB_URL, DB_NAME, DB_USER, DB_PASSWORD, DB_COL_BILLS } = process.env
 
 const url = (() => {
-  let url = DB_URL.replace(/dbuser/i, DB_USER)
+  let url = DB_URL.replace(/dbuser/, DB_USER)
   url = url.replace(/dbpassword/, DB_PASSWORD)
   return url
 })()

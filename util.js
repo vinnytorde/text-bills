@@ -22,7 +22,7 @@ function processMessage(input) {
 // determines if a command meets the required format:
 // type: name price[ category]
 function isValid(command) {
-  return /(log|pay):\s+([\w+\s]{1,})\s+\$(\d+\.?\d+)\s*(\w+)*/i.test(command)
+  return constants.BILL_REGEX.test(command)
 }
 
 // returns a map of each command and its respective amount
@@ -32,9 +32,7 @@ function isValid(command) {
 // output has schema:
 // {type: String, name: String, price: Number[, category: String]}
 function processCommand(command) {
-  const asArray = Array.from(
-    command.match(/(log|pay):\s+([\w+\s]{1,})\s+\$(\d+\.?\d+)\s*(\w+)*/i)
-  )
+  const asArray = Array.from(command.match(constants.BILL_REGEX))
 
   // first match is always the whole command, so we remove it
   // from there, matches are organized in order of keys
@@ -53,4 +51,24 @@ function processCommand(command) {
   return linkedMap
 }
 
-module.exports = { nextFriday, processMessage, isValid, processCommand }
+// validates that the text starts with the word register,
+// and captures the password that follows it.
+// a register text follows this format:
+// register: password
+function isRegisterText(input) {
+  return constants.REGISTER_REGEX.test(input)
+}
+
+// returns the password from the register text.
+function processRegisterText(input) {
+  return input.match(constants.REGISTER_REGEX)[1]
+}
+
+module.exports = {
+  nextFriday,
+  processMessage,
+  isValid,
+  isRegisterText,
+  processCommand,
+  processRegisterText
+}
